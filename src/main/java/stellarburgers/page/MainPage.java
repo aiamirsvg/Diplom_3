@@ -45,7 +45,7 @@ public class MainPage {
     public void open() {
         driver.get(URL);
         wait.until(
-                ExpectedConditions.visibilityOfElementLocated(bunsTab)
+                ExpectedConditions.visibilityOfElementLocated(loginButton)
         );
     }
 

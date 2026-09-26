@@ -35,4 +35,24 @@ public class UserApi {
                     .delete("/api/auth/user");
         }
     }
+    public static void createUser(
+            String email,
+            String password,
+            String name
+    ) {
+        String requestBody = String.format(
+                "{\"email\":\"%s\",\"password\":\"%s\",\"name\":\"%s\"}",
+                email,
+                password,
+                name
+        );
+
+        given()
+                .baseUri(BASE_URL)
+                .contentType(JSON)
+                .body(requestBody)
+                .post("/api/auth/register")
+                .then()
+                .statusCode(200);
+    }
 }
