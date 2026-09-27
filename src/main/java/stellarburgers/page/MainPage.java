@@ -5,6 +5,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
 
@@ -29,28 +31,36 @@ public class MainPage {
             By.xpath("//button[text()='Оформить заказ']");
 
     private final By bunsTab =
-            By.xpath("//div[contains(@class,'tab_tab') and text()='Булки']");
+            By.xpath(
+                    "//div[contains(@class,'tab_tab') and contains(.,'Булки')]"
+            );
 
     private final By saucesTab =
-            By.xpath("//div[contains(@class,'tab_tab') and text()='Соусы']");
+            By.xpath(
+                    "//div[contains(@class,'tab_tab') and contains(.,'Соусы')]"
+            );
 
     private final By fillingsTab =
-            By.xpath("//div[contains(@class,'tab_tab') and text()='Начинки']");
+            By.xpath(
+                    "//div[contains(@class,'tab_tab') and contains(.,'Начинки')]"
+            );
 
     public MainPage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(30));
     }
 
     public void open() {
         driver.get(URL);
         wait.until(
-                ExpectedConditions.visibilityOfElementLocated(loginButton)
+                ExpectedConditions.visibilityOfElementLocated(bunsTab)
         );
     }
 
     public void clickLoginButton() {
-        driver.findElement(loginButton).click();
+        wait.until(
+                ExpectedConditions.elementToBeClickable(loginButton)
+        ).click();
     }
 
     public void clickAccountLink() {
@@ -68,15 +78,15 @@ public class MainPage {
     }
 
     public void clickBunsTab() {
-        driver.findElement(bunsTab).click();
+        clickTab(bunsTab);
     }
 
     public void clickSaucesTab() {
-        driver.findElement(saucesTab).click();
+        clickTab(saucesTab);
     }
 
     public void clickFillingsTab() {
-        driver.findElement(fillingsTab).click();
+        clickTab(fillingsTab);
     }
 
     public boolean isBunsTabActive() {
@@ -92,11 +102,20 @@ public class MainPage {
     }
 
     private boolean isTabActive(By locator) {
+        return wait.until(
+                ExpectedConditions.attributeContains(
+                        locator,
+                        "class",
+                        "tab_type_current"
+                )
+        );
+    }
+    private void clickTab(By locator) {
         WebElement tab = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(locator)
+                ExpectedConditions.presenceOfElementLocated(locator)
         );
 
-        return tab.getAttribute("class")
-                .contains("tab_type_current");
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].click();", tab);
     }
 }

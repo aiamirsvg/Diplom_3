@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.PageLoadStrategy;
 
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -16,22 +17,24 @@ public abstract class BaseTest {
 
     @Before
     public void setUpBrowser() {
-        String browserName =
-                System.getProperty("browser", "chrome");
+        String browser = System.getProperty("browser", "chrome");
 
         ChromeOptions options = new ChromeOptions();
+        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
+        options.addArguments("--window-size=1920,1080");
 
-        if ("yandex".equalsIgnoreCase(browserName)) {
-            String yandexPath = Paths.get(
-                    System.getenv("LOCALAPPDATA"),
-                    "Yandex",
-                    "YandexBrowser",
-                    "Application",
-                    "browser.exe"
-            ).toString();
+        if ("yandex".equalsIgnoreCase(browser)) {
+            String yandexPath =
+                    "C:\\Program Files\\Yandex\\YandexBrowser\\Application\\browser.exe";
 
-            WebDriverManager.chromedriver().setup();
+            WebDriverManager.chromedriver()
+                    .browserVersion("150")
+                    .setup();
             options.setBinary(yandexPath);
+            options.addArguments("--headless=new");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--remote-allow-origins=*");
         } else {
             WebDriverManager.chromedriver().setup();
         }
@@ -39,7 +42,6 @@ public abstract class BaseTest {
         driver = new ChromeDriver(options);
         driver.manage().timeouts()
                 .implicitlyWait(Duration.ofSeconds(3));
-        driver.manage().window().maximize();
     }
 
     @After

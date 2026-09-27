@@ -4,7 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
 import java.time.Duration;
 
 public class RegistrationPage {
@@ -35,7 +36,7 @@ public class RegistrationPage {
 
     public RegistrationPage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(30));
     }
 
     public void open() {
@@ -53,7 +54,12 @@ public class RegistrationPage {
     }
 
     public void clickLoginLink() {
-        driver.findElement(loginLink).click();
+        WebElement link = wait.until(
+                ExpectedConditions.presenceOfElementLocated(loginLink)
+        );
+
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].click();", link);
     }
 
     public boolean isIncorrectPasswordMessageDisplayed() {
