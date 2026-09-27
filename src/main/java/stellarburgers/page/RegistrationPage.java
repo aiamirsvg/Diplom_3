@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import java.time.Duration;
+import io.qameta.allure.Step;
 
 public class RegistrationPage {
 
@@ -39,6 +40,7 @@ public class RegistrationPage {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(30));
     }
 
+    @Step("Открыть страницу регистрации")
     public void open() {
         driver.get(URL);
         wait.until(
@@ -46,6 +48,7 @@ public class RegistrationPage {
         );
     }
 
+    @Step("Зарегистрировать пользователя с email: {email}")
     public void register(String name, String email, String password) {
         driver.findElement(nameInput).sendKeys(name);
         driver.findElement(emailInput).sendKeys(email);
@@ -53,6 +56,7 @@ public class RegistrationPage {
         driver.findElement(registerButton).click();
     }
 
+    @Step("Нажать ссылку входа на странице регистрации")
     public void clickLoginLink() {
         WebElement link = wait.until(
                 ExpectedConditions.presenceOfElementLocated(loginLink)
@@ -62,6 +66,7 @@ public class RegistrationPage {
                 .executeScript("arguments[0].click();", link);
     }
 
+    @Step("Проверить сообщение о некорректном пароле")
     public boolean isIncorrectPasswordMessageDisplayed() {
         return wait.until(
                 ExpectedConditions.visibilityOfElementLocated(

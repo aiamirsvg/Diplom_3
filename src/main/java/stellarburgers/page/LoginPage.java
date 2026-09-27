@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import io.qameta.allure.Step;
 
 import java.time.Duration;
 
@@ -35,31 +36,37 @@ public class LoginPage {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(30));
     }
 
+    @Step("Открыть страницу входа")
     public void open() {
         driver.get(URL);
         waitForPage();
     }
 
+    @Step("Дождаться загрузки страницы входа")
     public void waitForPage() {
         wait.until(
                 ExpectedConditions.visibilityOfElementLocated(loginButton)
         );
     }
 
+    @Step("Войти с email: {email}")
     public void login(String email, String password) {
         driver.findElement(emailInput).sendKeys(email);
         driver.findElement(passwordInput).sendKeys(password);
         driver.findElement(loginButton).click();
     }
 
+    @Step("Нажать ссылку регистрации")
     public void clickRegisterLink() {
         driver.findElement(registerLink).click();
     }
 
+    @Step("Нажать ссылку восстановления пароля")
     public void clickForgotPasswordLink() {
         driver.findElement(forgotPasswordLink).click();
     }
 
+    @Step("Проверить отображение кнопки входа")
     public boolean isLoginButtonDisplayed() {
         return wait.until(
                 ExpectedConditions.visibilityOfElementLocated(loginButton)

@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebElement;
+import io.qameta.allure.Step;
 
 import java.time.Duration;
 
@@ -50,6 +50,7 @@ public class MainPage {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(30));
     }
 
+    @Step("Открыть главную страницу")
     public void open() {
         driver.get(URL);
         wait.until(
@@ -57,46 +58,56 @@ public class MainPage {
         );
     }
 
+    @Step("Нажать кнопку «Войти в аккаунт»")
     public void clickLoginButton() {
         wait.until(
                 ExpectedConditions.elementToBeClickable(loginButton)
         ).click();
     }
 
+    @Step("Нажать ссылку «Личный кабинет»")
     public void clickAccountLink() {
         driver.findElement(accountLink).click();
     }
 
+    @Step("Нажать ссылку «Конструктор»")
     public void clickConstructorLink() {
         driver.findElement(constructorLink).click();
     }
 
+    @Step("Проверить отображение кнопки оформления заказа")
     public boolean isOrderButtonDisplayed() {
         return wait.until(
                 ExpectedConditions.visibilityOfElementLocated(orderButton)
         ).isDisplayed();
     }
 
+    @Step("Перейти к разделу «Булки»")
     public void clickBunsTab() {
         clickTab(bunsTab);
     }
 
+    @Step("Перейти к разделу «Соусы»")
     public void clickSaucesTab() {
         clickTab(saucesTab);
     }
 
+    @Step("Перейти к разделу «Начинки»")
     public void clickFillingsTab() {
         clickTab(fillingsTab);
     }
 
+    @Step("Проверить активность раздела «Булки»")
     public boolean isBunsTabActive() {
         return isTabActive(bunsTab);
     }
 
+    @Step("Проверить активность раздела «Соусы»")
     public boolean isSaucesTabActive() {
         return isTabActive(saucesTab);
     }
 
+    @Step("Проверить активность раздела «Начинки»")
     public boolean isFillingsTabActive() {
         return isTabActive(fillingsTab);
     }

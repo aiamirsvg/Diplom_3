@@ -1,9 +1,13 @@
 package stellarburgers;
 
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
+import stellarburgers.model.User;
+import stellarburgers.model.UserCredentials;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
+import static org.apache.http.HttpStatus.SC_OK;
 
 public class UserApi {
 
@@ -13,46 +17,45 @@ public class UserApi {
     private UserApi() {
     }
 
-    public static void deleteUser(String email, String password) {
-        String requestBody = String.format(
-                "{\"email\":\"%s\",\"password\":\"%s\"}",
-                email,
-                password
-        );
+    @Step("Создать пользователя через API")
+    public static void createUser(
+            String email,
+            String password,
+            String name
+    ) {
+        User user = new User(email, password, name);
+
+        given()
+                .baseUri(BASE_URL)
+                .contentType(JSON)
+                .body(user)
+                .post("/api/auth/register")
+                .then()
+                .statusCode(SC_OK);
+    }
+
+    @Step("Удалить пользователя через API")
+    public static void deleteUser(
+            String email,
+            String password
+    ) {
+        UserCredentials credentials =
+                new UserCredentials(email, password);
 
         Response loginResponse = given()
                 .baseUri(BASE_URL)
                 .contentType(JSON)
-                .body(requestBody)
+                .body(credentials)
                 .post("/api/auth/login");
 
-        if (loginResponse.statusCode() == 200) {
-            String token = loginResponse.path("accessToken");
+        if (loginResponse.statusCode() == SC_OK) {
+            String token =
+                    loginResponse.path("accessToken");
 
             given()
                     .baseUri(BASE_URL)
                     .header("Authorization", token)
                     .delete("/api/auth/user");
         }
-    }
-    public static void createUser(
-            String email,
-            String password,
-            String name
-    ) {
-        String requestBody = String.format(
-                "{\"email\":\"%s\",\"password\":\"%s\",\"name\":\"%s\"}",
-                email,
-                password,
-                name
-        );
-
-        given()
-                .baseUri(BASE_URL)
-                .contentType(JSON)
-                .body(requestBody)
-                .post("/api/auth/register")
-                .then()
-                .statusCode(200);
     }
 }

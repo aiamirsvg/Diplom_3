@@ -20,7 +20,6 @@ public abstract class BaseTest {
         String browser = System.getProperty("browser", "chrome");
 
         ChromeOptions options = new ChromeOptions();
-        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
         options.addArguments("--window-size=1920,1080");
 
         if ("yandex".equalsIgnoreCase(browser)) {
@@ -30,13 +29,17 @@ public abstract class BaseTest {
             WebDriverManager.chromedriver()
                     .browserVersion("150")
                     .setup();
+
+            options.setPageLoadStrategy(PageLoadStrategy.NONE);
             options.setBinary(yandexPath);
             options.addArguments("--headless=new");
             options.addArguments("--disable-gpu");
             options.addArguments("--no-sandbox");
             options.addArguments("--remote-allow-origins=*");
         } else {
+            options.setPageLoadStrategy(PageLoadStrategy.EAGER);
             WebDriverManager.chromedriver().setup();
+
         }
 
         driver = new ChromeDriver(options);
@@ -46,7 +49,8 @@ public abstract class BaseTest {
 
     @After
     public void tearDownBrowser() {
-        if (driver != null) {            driver.quit();
+        if (driver != null) {
+            driver.quit();
         }
     }
 }
